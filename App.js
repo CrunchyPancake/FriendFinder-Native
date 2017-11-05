@@ -18,6 +18,25 @@ export default class App extends React.Component {
     });
   }
 
+  setAnnotations = (data) => {
+    let annotations = []
+    for (user in data) {
+      let userName = data.userName
+      let latitude = data.loc.coordinates[0]
+      let longitude = data.loc.coordinates[1]
+      let marker = {
+        latitude: latitude,
+        longitude: longitude,
+        title: userName,
+        subtitle: 'Something'
+      }
+      annotations.push(marker)
+    }
+    Alert.alert("Annotations", "" + annotations)
+    this.setState({ mapAnnotations: annotations })
+  }
+
+
   // this.setState({ mapVisible: true })
   login = () => {
     if (this.state.name != '' && this.state.distance != '') {
@@ -34,11 +53,16 @@ export default class App extends React.Component {
           distance: this.state.distance
         })
       }
-
+      // Good to go
+      let that = this;
       fetch(url, fetchData)
-        .then(function (res) {
-          return Alert.alert("" + res)
-        })
+        .then((response) => response.text())
+        .then((responseData) => { 
+          that.setState({ mapVisible: true })
+          that.setAnnotations(responseData)
+         })
+        .catch((error) => { Alert.alert("Something", "" + error)});
+
     } else {
       Alert.alert('Error', 'You need to fill out all fields')
     }
@@ -78,16 +102,10 @@ export default class App extends React.Component {
           animationType="fade"
           transparent={false}
           visible={this.state.mapVisible}
-          onRequestClose={() => { this.setState({ mapVisible: false }) }}
-        >
-          <View style={{ marginTop: 22 }}>
-            <MapView
-              style={{ flex: 1, margin: 40 }}
-              showsUserLocation={true}
-              followUserLocation={true}
-              pitchEnabled={true}
-            />
-          </View>
+          onRequestClose={() => { this.setState({ mapVisible: false }) }}>
+          <MapView
+            style={{ flex: 1, padding: 30 }}
+            showsUserLocation={true} />
         </Modal>
       </ImageBackground>
     )
