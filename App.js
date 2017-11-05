@@ -10,19 +10,35 @@ export default class App extends React.Component {
   }
 
   getCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(function(position) {
+    navigator.geolocation.getCurrentPosition(function (position) {
       let latitude = position.coords.latitude
       let longitude = position.coords.longitude
       let coordArray = [latitude, longitude]
-      Alert.alert("" + coordArray)
       return coordArray
     });
   }
 
-// this.setState({ mapVisible: true })
+  // this.setState({ mapVisible: true })
   login = () => {
     if (this.state.name != '' && this.state.distance != '') {
-      Alert.alert("COORDINATES: " + this.getCoordinates())  
+      let url = 'http://www.jonathanhenriksen.com/'
+      let fetchData = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userName: this.state.name,
+          coordinates: [12.502635, 55.719345],
+          distance: this.state.distance
+        })
+      }
+
+      fetch(url, fetchData)
+        .then(function (res) {
+          return Alert.alert("" + res)
+        })
     } else {
       Alert.alert('Error', 'You need to fill out all fields')
     }
