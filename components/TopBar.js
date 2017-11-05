@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
 import { Text, TouchableHighlight, StyleSheet, Image } from 'react-native';
 
-export default class PrettyButton extends Component {
+export default class TopBar extends Component {
     constructor(props) {
         super(props)
     }
     render() {
         return (
-            <TouchableHighlight onPress={this.props.onPress} activeOpacity={0.6} underlayColor={'transparent'}>
-                <Image
-                    style={styles.touchable}
-                    source={require('./button.png')}>
-                    <Text style={styles.text}>
-                        {this.props.title}
-                    </Text>
-                </Image>
-            </TouchableHighlight>
+            <View> 
+                
+            </View>
+
         )
     }
 }

@@ -6,8 +6,16 @@ export default class App extends React.Component {
   constructor() {
     super()
     this.state = { name: '', distance: '' };
-
   }
+
+  login = () => {
+    if (this.state.name != '' && this.state.distance != '' ) {
+      Alert.alert("Success!")
+    } else {
+      Alert.alert('You need to fill out all fields')
+    }
+  }
+
   render() {
     return (
       <View style={styles.main_container}>
@@ -25,16 +33,14 @@ export default class App extends React.Component {
           <Text style={styles.text}>
             Distance
           </Text>
-          <TextInput style={styles.inputField} placeholder="Kilometers"
+          <TextInput keyboardType = 'numeric' style={styles.inputField} placeholder="Kilometers"
             onChangeText={(distance) => this.setState({ distance })} >
           </TextInput>
-
         </View>
-
 
         <View style={styles.container_row}>
           <PrettyButton title='Submit'
-            onPress={() => Alert.alert(this.state.distance)} />
+            onPress={() => this.login()} />
         </View>
       </View>
 
