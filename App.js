@@ -1,16 +1,28 @@
 import React from 'react';
-import { StyleSheet, Text, View, MapView, Modal, Alert, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Modal, Alert, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import MapView from 'react-native-maps'
 import PrettyButton from './components/PrettyButton';
 
 export default class App extends React.Component {
   constructor() {
     super()
-    this.state = { name: '', distance: '', mapVisible: false };
+    this.state = { name: '', distance: '', mapVisible: false, mapAnnotations: [] };
   }
 
+  getCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let latitude = position.coords.latitude
+      let longitude = position.coords.longitude
+      let coordArray = [latitude, longitude]
+      Alert.alert("" + coordArray)
+      return coordArray
+    });
+  }
+
+// this.setState({ mapVisible: true })
   login = () => {
     if (this.state.name != '' && this.state.distance != '') {
-      this.setState({ mapVisible: true })
+      Alert.alert("COORDINATES: " + this.getCoordinates())  
     } else {
       Alert.alert('Error', 'You need to fill out all fields')
     }
@@ -47,16 +59,18 @@ export default class App extends React.Component {
         </View>
 
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={false}
           visible={this.state.mapVisible}
-          onRequestClose={() => { this.setState({mapVisible : false}) }}
-          presentationStyle={'pageSheet'}
+          onRequestClose={() => { this.setState({ mapVisible: false }) }}
         >
           <View style={{ marginTop: 22 }}>
-            <Text style={styles.text}>
-              Test Modal
-              </Text>
+            <MapView
+              style={{ flex: 1, margin: 40 }}
+              showsUserLocation={true}
+              followUserLocation={true}
+              pitchEnabled={true}
+            />
           </View>
         </Modal>
       </ImageBackground>
