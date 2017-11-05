@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, MapView, Modal, Alert, TextInput } from 'react-native';
+import { StyleSheet, Text, View, MapView, Modal, Alert, TextInput, ImageBackground } from 'react-native';
 import PrettyButton from './components/PrettyButton';
 
 export default class App extends React.Component {
@@ -9,42 +9,43 @@ export default class App extends React.Component {
   }
 
   login = () => {
-    if (this.state.name != '' && this.state.distance != '' ) {
+    if (this.state.name != '' && this.state.distance != '') {
       Alert.alert("Success!")
     } else {
-      Alert.alert('You need to fill out all fields')
+      Alert.alert('Error', 'You need to fill out all fields')
     }
   }
 
   render() {
     return (
-      <View style={styles.main_container}>
+        <ImageBackground style={styles.backgroundImage}
+          source={require('./images/background.jpg')}>
+          <View style={styles.main_container}>
 
-        <View style={styles.container_row}>
-          <Text style={styles.text}>
-            Nickname
-          </Text>
-          <TextInput style={styles.inputField} placeholder="Enter your name"
-            onChangeText={(name) => this.setState({ name })} >
-          </TextInput>
-        </View>
+            <View style={styles.container_row}>
+              <Text style={styles.text}>
+                Nickname
+              </Text>
+              <TextInput style={styles.inputField} placeholder="Enter your name"
+                onChangeText={(name) => this.setState({ name })} >
+              </TextInput>
+            </View>
 
-        <View style={styles.container_row}>
-          <Text style={styles.text}>
-            Distance
-          </Text>
-          <TextInput keyboardType = 'numeric' style={styles.inputField} placeholder="Kilometers"
-            onChangeText={(distance) => this.setState({ distance })} >
-          </TextInput>
-        </View>
+            <View style={styles.container_row}>
+              <Text style={styles.text}>
+                Distance
+              </Text>
+              <TextInput keyboardType='numeric' style={styles.inputField} placeholder="Kilometers"
+                onChangeText={(distance) => this.setState({ distance })} >
+              </TextInput>
+            </View>
 
-        <View style={styles.container_row}>
-          <PrettyButton title='Submit'
-            onPress={() => this.login()} />
-        </View>
-      </View>
-
-
+            <View style={styles.container_row}>
+              <PrettyButton title='Submit'
+                onPress={() => this.login()} />
+            </View>
+          </View>
+        </ImageBackground>
     )
   }
 }
@@ -53,10 +54,9 @@ const styles = StyleSheet.create({
   main_container: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: 'linen',
+    backgroundColor: 'transparent',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20
+    justifyContent: 'center'
   },
   container_row: {
     flexDirection: 'row',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   inputField: {
     height: 70,
-    width: 170,
+    width: 220,
     fontSize: 20
   },
   text: {
@@ -73,6 +73,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 20,
     opacity: 0.6
+  },
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null
   }
 
-});
+
+  });

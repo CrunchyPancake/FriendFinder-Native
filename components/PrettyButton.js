@@ -10,7 +10,7 @@ export default class PrettyButton extends Component {
             <TouchableHighlight onPress={this.props.onPress} activeOpacity={0.6} underlayColor={'transparent'}>
                 <Image
                     style={styles.touchable}
-                    source={require('./button.png')}>
+                    source={require('../images/button.png')}>
                     <Text style={styles.text}>
                         {this.props.title}
                     </Text>
