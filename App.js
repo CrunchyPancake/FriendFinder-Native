@@ -1,19 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, View, Modal, Alert, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Alert, TextInput, ImageBackground, TouchableHighlight } from 'react-native';
+import Modal from 'react-native-modal'
 import MapView from 'react-native-maps'
 import PrettyButton from './components/PrettyButton';
 
 export default class App extends React.Component {
   constructor() {
     super()
-    this.state = { name: '', distance: '', mapVisible: false, mapAnnotations: [], position: 'unknown' };
+    this.state = { name: '', distance: '', mapVisible: false, mapAnnotations: [], position: [], latLng: {} };
   }
 
   setCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       (curPosition) => {
-        console.log('curPosition: ' + curPosition)
         let coordArray = [curPosition.coords.longitude, curPosition.coords.latitude]
+        let latLng = {latitude : coordArray[0], longitude : coordArray[1]}
+        this.setState({ latLng }, () => {
+          console.log("latLng: " + JSON.stringify(this.state.latLng))
+        })
         const position = coordArray;
         this.setState({ position }, () => {
           console.log("state = " + this.state.position)
@@ -21,7 +25,7 @@ export default class App extends React.Component {
         });
       },
       (error) => alert(error.message),
-      { enableHighAccuracy: true, timeout: 20000}
+      { enableHighAccuracy: true, timeout: 20000 }
     )
   }
 
@@ -93,35 +97,41 @@ export default class App extends React.Component {
             <Text style={styles.text}>
               Distance
               </Text>
-            <TextInput keyboardType='numeric' style={styles.inputField} placeholder="Kilometers"
+            <TextInput keyboardType='numeric' style={styles.inputField} placeholder="Units (Km)"
               onChangeText={(distance) => this.setState({ distance })} >
             </TextInput>
           </View>
 
           <View style={styles.container_row}>
-            <PrettyButton title='Find Your Friends'
+            <PrettyButton title='Find Your Friends!'
               onPress={() => this.setCoordinates()} />
           </View>
         </View>
 
         <Modal
-          animationType="fade"
-          transparent={true}
           visible={this.state.mapVisible}
-          onRequestClose={() => { this.setState({ mapVisible: false }) }}>
-          <MapView
-            style={{ flex: 1, margin: 35}}
-            showsUserLocation={true}>
+          onRequestClose={() => { this.setState({ mapVisible: false }) }}
+          backdropColor='black' a>
 
-            {this.state.mapAnnotations.map(marker => (
-              <MapView.Marker
-                key={marker.title}
-                coordinate={marker.coordinates}
-                title={marker.title}
-              />
-            ))}
+          <View style={styles.map_container}>
+            <MapView
+              style={{ flex: 1, overflow: 'hidden' }}
+              showsUserLocation={true}>
 
-          </MapView>
+              {this.state.mapAnnotations.map(marker => (
+                <MapView.Marker
+                  key={marker.title}
+                  coordinate={marker.coordinates}
+                  title={marker.title}
+                />
+              ))}
+
+              <MapView.Circle
+              center={this.state.latLng}
+              radius={this.state.distance * 1000}/>
+
+            </MapView>
+          </View>
 
           <View flexDirection='row' style={{ backgroundColor: 'transparent' }}>
 
@@ -150,6 +160,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 5,
     alignItems: 'center',
+  },
+  map_container: {
+    flex: 1,
+    borderRadius: 10
   },
   inputField: {
     height: 70,
