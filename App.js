@@ -6,16 +6,21 @@ import PrettyButton from './components/PrettyButton';
 export default class App extends React.Component {
   constructor() {
     super()
-    this.state = { name: '', distance: '', mapVisible: false, mapAnnotations: [] };
+    this.state = { name: '', distance: '', mapVisible: false, mapAnnotations: [], position: 'unknown' };
   }
 
-  getCoordinates = () => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      let latitude = position.coords.latitude
-      let longitude = position.coords.longitude
-      let coordArray = [latitude, longitude]
-      return coordArray
-    });
+  setCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      (curPosition) => {
+        let coordArray = [curPosition.coords.latitude, curPosition.coords.longitude]
+        const position = JSON.stringify(coordArray);
+        this.setState({ position }, () => {
+          this.login()
+        });
+      },
+      (error) => alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000}
+    )
   }
 
   setAnnotations = (data) => {
@@ -37,6 +42,7 @@ export default class App extends React.Component {
   }
 
   login = () => {
+    console.log("Gargh: " + this.state.position)
     if (this.state.name != '' && this.state.distance != '') {
       let url = 'http://www.jonathanhenriksen.com/'
       let fetchData = {
@@ -92,7 +98,7 @@ export default class App extends React.Component {
 
           <View style={styles.container_row}>
             <PrettyButton title='Find Your Friends'
-              onPress={() => this.login()} />
+              onPress={() => this.setCoordinates()} />
           </View>
         </View>
 
@@ -102,7 +108,7 @@ export default class App extends React.Component {
           visible={this.state.mapVisible}
           onRequestClose={() => { this.setState({ mapVisible: false }) }}>
           <MapView
-            style={{ flex: 1, margin: 35, borderColor: 'black'}}
+            style={{ flex: 1, margin: 35, borderRadius: 10, overflow: 'hidden' }}
             showsUserLocation={true}>
 
             {this.state.mapAnnotations.map(marker => (
@@ -115,7 +121,7 @@ export default class App extends React.Component {
 
           </MapView>
 
-          <View flexDirection='row' style={{backgroundColor : 'transparent'}}>
+          <View flexDirection='row' style={{ backgroundColor: 'transparent' }}>
 
             <PrettyButton title='Back' style={{ flex: 1 }}
               onPress={() => this.setState({ mapVisible: false })} />
