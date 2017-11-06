@@ -20,24 +20,22 @@ export default class App extends React.Component {
 
   setAnnotations = (data) => {
     let annotations = []
-    for (user in data) {
-      let userName = data.userName
-      let latitude = data.loc.coordinates[0]
-      let longitude = data.loc.coordinates[1]
+    for (var i = 0; i < data.length; i++) {
+      let userName = data[i].userName
+      let latitude = data[i].loc.coordinates[1]
+      let longitude = data[i].loc.coordinates[0]
       let marker = {
-        latitude: latitude,
-        longitude: longitude,
         title: userName,
-        subtitle: 'Something'
+        coordinates: {
+          latitude: latitude,
+          longitude: longitude
+        }
       }
       annotations.push(marker)
     }
-    Alert.alert("Annotations", "" + annotations)
     this.setState({ mapAnnotations: annotations })
   }
 
-
-  // this.setState({ mapVisible: true })
   login = () => {
     if (this.state.name != '' && this.state.distance != '') {
       let url = 'http://www.jonathanhenriksen.com/'
@@ -49,19 +47,19 @@ export default class App extends React.Component {
         },
         body: JSON.stringify({
           userName: this.state.name,
-          coordinates: [12.502635, 55.719345],
+          coordinates: [11.898346, 55.967062],
           distance: this.state.distance
         })
       }
       // Good to go
       let that = this;
       fetch(url, fetchData)
-        .then((response) => response.text())
-        .then((responseData) => { 
-          that.setState({ mapVisible: true })
+        .then((responseData) => responseData.json())
+        .then((responseData) => {
           that.setAnnotations(responseData)
-         })
-        .catch((error) => { Alert.alert("Something", "" + error)});
+          that.setState({ mapVisible: true })
+        })
+        .catch((error) => { console.log(error) });
 
     } else {
       Alert.alert('Error', 'You need to fill out all fields')
@@ -93,19 +91,39 @@ export default class App extends React.Component {
           </View>
 
           <View style={styles.container_row}>
-            <PrettyButton title='Submit'
+            <PrettyButton title='Find Your Friends'
               onPress={() => this.login()} />
           </View>
         </View>
 
         <Modal
           animationType="fade"
-          transparent={false}
+          transparent={true}
           visible={this.state.mapVisible}
           onRequestClose={() => { this.setState({ mapVisible: false }) }}>
           <MapView
-            style={{ flex: 1, padding: 30 }}
-            showsUserLocation={true} />
+            style={{ flex: 1, margin: 35, borderColor: 'black'}}
+            showsUserLocation={true}>
+
+            {this.state.mapAnnotations.map(marker => (
+              <MapView.Marker
+                key={marker.title}
+                coordinate={marker.coordinates}
+                title={marker.title}
+              />
+            ))}
+
+          </MapView>
+
+          <View flexDirection='row' style={{backgroundColor : 'transparent'}}>
+
+            <PrettyButton title='Back' style={{ flex: 1 }}
+              onPress={() => this.setState({ mapVisible: false })} />
+
+            <PrettyButton title='Update' style={{ flex: 1 }}
+              onPress={() => this.login()} />
+          </View>
+
         </Modal>
       </ImageBackground>
     )

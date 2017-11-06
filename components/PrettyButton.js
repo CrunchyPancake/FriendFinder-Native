@@ -7,32 +7,35 @@ export default class PrettyButton extends Component {
     }
     render() {
         return (
-            <TouchableHighlight onPress={this.props.onPress} activeOpacity={0.6} underlayColor={'transparent'}>
-                <Image
-                    style={styles.touchable}
-                    source={require('../images/button.png')}>
-                    <Text style={styles.text}>
-                        {this.props.title}
-                    </Text>
-                </Image>
+            <TouchableHighlight
+                style={styles.submit}
+                onPress={this.props.onPress}
+                underlayColor='transparent'>
+                <Text style={styles.submitText}>{this.props.title}</Text>
             </TouchableHighlight>
+
+
         )
     }
 }
 
 const styles = StyleSheet.create({
-    touchable: {
-        height: 70,
-        width: 180,
-        opacity: 0.8,
-        alignItems: 'center'
-
-    },
-    text: {
-        flex: 1,
-        fontSize: 20,
-        padding: 20,
-        opacity: 0.6
-    }
+    submit:{
+        flex : 1,
+        marginRight:20,
+        marginLeft:20,
+        marginTop:10,
+        marginBottom:20,
+        paddingTop:20,
+        paddingBottom:20,
+        backgroundColor:'#68a0cf',
+        borderRadius:10,
+        borderWidth: 1,
+        borderColor: '#fff'
+      },
+      submitText:{
+          color:'#fff',
+          textAlign:'center',
+      }
 })
 
