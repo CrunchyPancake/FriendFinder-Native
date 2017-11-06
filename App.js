@@ -12,9 +12,11 @@ export default class App extends React.Component {
   setCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       (curPosition) => {
-        let coordArray = [curPosition.coords.latitude, curPosition.coords.longitude]
-        const position = JSON.stringify(coordArray);
+        console.log('curPosition: ' + curPosition)
+        let coordArray = [curPosition.coords.longitude, curPosition.coords.latitude]
+        const position = coordArray;
         this.setState({ position }, () => {
+          console.log("state = " + this.state.position)
           this.login()
         });
       },
@@ -27,13 +29,13 @@ export default class App extends React.Component {
     let annotations = []
     for (var i = 0; i < data.length; i++) {
       let userName = data[i].userName
-      let latitude = data[i].loc.coordinates[1]
-      let longitude = data[i].loc.coordinates[0]
+      let latitude = data[i].loc.coordinates[0]
+      let longitude = data[i].loc.coordinates[1]
       let marker = {
         title: userName,
         coordinates: {
-          latitude: latitude,
-          longitude: longitude
+          latitude: longitude,
+          longitude: latitude
         }
       }
       annotations.push(marker)
@@ -53,7 +55,7 @@ export default class App extends React.Component {
         },
         body: JSON.stringify({
           userName: this.state.name,
-          coordinates: [11.898346, 55.967062],
+          coordinates: this.state.position,
           distance: this.state.distance
         })
       }
@@ -108,7 +110,7 @@ export default class App extends React.Component {
           visible={this.state.mapVisible}
           onRequestClose={() => { this.setState({ mapVisible: false }) }}>
           <MapView
-            style={{ flex: 1, margin: 35, borderRadius: 10, overflow: 'hidden' }}
+            style={{ flex: 1, margin: 35}}
             showsUserLocation={true}>
 
             {this.state.mapAnnotations.map(marker => (
